@@ -1,8 +1,24 @@
-var http = require('http');
+var restify = require('restify');
+// var mongoose = require('mongoose');
 
-http.createServer(function (req, res) {
-    res.writeHead(200, {'Content-Type': 'text/plain'});
-    res.end('Hello World!\n');
-}).listen(3000);
+// Controllers
+var public_key = require('./controllers/public_key.js');
+var message = require('./controllers/message.js');
+var recipient = require('./controllers/recipient.js');
 
-console.log('Server running on port 3000');
+// Set up server
+var server = restify.createServer();
+server.use(restify.bodyParser());
+
+//Routes
+server.post("/api/public_key", public_key.post);
+server.head("/api/public_key", public_key.post);
+server.post("/api/message", message.post);
+
+server.get("/recipient/public_key", recipient.public_key);
+server.post("/recipient/message", recipient.message);
+
+// Start server
+server.listen(3000, function() {
+	console.log("%s listening at %s", server.name, server.url);
+});
