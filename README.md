@@ -1,3 +1,5 @@
+# Green Hornet
+
 Green Hornet is designed to secure communication between news organisations and whistleblowers that need protection. 
 
 It consists of three parts: 
