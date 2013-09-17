@@ -1,59 +1,71 @@
-This is a Vagrant file and set of Chef recipes for building a basic node development environment.
-If you're not familiar with Vagrant, read more about it at http://www.vagrantup.com.
+Green Hornet is designed to secure communication between news organisations and whistleblowers that need protection. 
 
-To get this to work, you must have VirtualBox (> 4.1.0) and Vagrant (> 1.0) installed. 
-I've most recently been testing it with VirtualBox 4.2.10 and Vagrant 1.1.0. Please post an
-issue if you're having problems with other versions, and I'll see if I can track it down.
+It consists of three parts: 
+- A server hosted by Afridocs;
+- A server at the news organisation's premesis;
+- A client application.
 
+The servers all work through an API, allowing for new clients or servers to be built and plugged into the architecture. All parts of the ecosystem are open source and free to run on your own, so you're not restricted to Afridocs' environment.
 
-Installers for VirtualBox are available at http://www.virtualbox.org, and installers for
-Vagrant are available at http://www.vagrantup.com.
+This project is currently in early-stage development, and not in any way ready for production at this point. If you are interested in contributing to the project, please feel free to fork it and send pull requests.
 
-Once you have the pre-requisites installed, you should be able to clone this repository 
+Green Hornet is an Afridocs project.
 
-    git clone https://github.com/semmypurewal/node-dev-bootstrap.git my_project
+## Running the Green Hornet server
 
-and change to your new project directory to start your VM:
+You can run the server component on Vagrant and VirtualBox. You can get Vagrant at http://www.vagrantup.com and VirtualBox at http://www.virtualbox.org. 
 
-    cd my_project
-    vagrant up
+To get the server running, first clone it:
 
-Note that the Vagrantfile will download and install the precise32 vagrant box if you don't
-already have it.
+	git clone git@github.com:Afridocs/Green-Hornet.git
 
-After a few minutes, you should have a virtual dev environment with node, npm, mongodb and redis.
-The app folder is shared, and port 3000 on the VM is forwarded to port 3000 on the localhost. This
-is all customizable in the Vagrantfile.
+Change the the directory:
+	
+	cd Green-Hornet
 
-You can test out your environment by ssh'ing into your environment and running the sample script:
+and start the Vagrant server:
 
-    vagrant ssh
-    cd app
-    node server.js
+	vagrant up
 
-Next open localhost:3000 in your web browser. If everything worked correctly, you should see
-'Hello World'
+Once it's up, you can SSH into the virtual server with:
 
-## Important note about Installing NPM Packages
+	vagrant ssh
 
-Later versions of VirtualBox do not support symlinks in shared folders. More info is available
-here: https://www.virtualbox.org/ticket/10085
+You can start the server by changing to the "app" directory and starting the Node.js server:
 
-This can cause problems when you're attempting to install certain packages via npm. For
-example, the 'jade' and 'express' packages create symlinks during installation, and
-therefore the installation will fail in the shared 'app' directory.
+	cd app
+	node server.js
 
-The best workaround for this is to install node packages in your shared folder with the 
---no-bin-links flag, e.g.
+Now you can browse to the server with your favourite browser at http://localhost:3000/. If you get an error message that looks like this: 
 
-    npm install express --no-bin-links
+	{"code":"ResourceNotFound","message":"/ does not exist"}
 
-If VirtualBox is your provider and you're using MacOS, you may also want to try to uncomment
-the "setextradata" customization in the VagrantFile to allow symlinks to work.
+then the server is running just fine. 
 
-I'm not sure how this affects other Virtual Machine providers.
+## Testing the Green Hornet server
 
+So an error message isn't much help. You can however run the tests, which will simulate sending an encrypted message to the Green Hornet server, through to the publication, and the publication decrypting and storing the message. 
 
+In another terminal, SSH into the Vagrant terminal again, and run the tests (with the server still running).
 
+	cd app
+	node test.js
 
+You'll see it perform two tests, and hopefully declare that the tests PASSED.
 
+## How it works
+
+1. The whistleblower client tells the Green Hornet server that it wants to send a message to a publication, in our test environment called "test".
+2. Green Hornet looks up the address of this "test" publication's server (in the test case, the same server), and tells the publication's server that it can expect an encrypted message.
+3. The publication's server generates a public-private key pair, and a message ID. It then sends the message ID and the public key to the Green Hornet server. It keeps the private key, which is never moved over the network.
+4. The Green Hornet server then passes that information to the whistleblower's client. The client uses the public key to encrypt the message, and then passes the encrypted message and the message ID to Green Hornet's server. The message is never sent over the network in the clear.
+5. Green Hornet passes the encrypted message to the publication's server.
+6. The message is decrypted on the publication's server.
+
+The important stuff to note is that the Green Hornet server never sees an unencrypted message or a private key. Even though we broker all the information, we have no way of examining it. Also, all sensitive information is kept off of the network. 
+
+It's also important to note that a new public-private key pair is generated for every message sent. That means that even if a key is compromised, it can only unencrypt a single message, instead of all messages. This is called "perfect forward" encryption. In an age where the NSA and others have the potential to store all network traffic until it has the means of decrypting keys, this is an important security measure.
+
+## API documentation
+
+Coming soon...
