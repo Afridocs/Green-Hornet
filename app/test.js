@@ -3,7 +3,7 @@ var assert = require('assert');
 var fs = require("fs");
 var ursa = require("ursa");
 var mongoose = require("mongoose");
-var Recipient = require("./models/recipient");
+var Recipient = require("././recipient");
 
 mongoose.connect('mongodb://localhost/greenhornet');
 

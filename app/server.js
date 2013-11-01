@@ -2,10 +2,10 @@ var restify = require('restify');
 // var mongoose = require('mongoose');
 
 // Controllers
-var public_key = require('./controllers/public_key.js');
-var message = require('./controllers/message.js');
-var recipient = require('./controllers/recipient.js');
-var directory = require('./controllers/directory.js');
+var public_key = require('./routes/public_key.js');
+var message = require('./routes/message.js');
+var recipient = require('./routes/recipient.js');
+var directory = require('./routes/directory.js');
 
 // Set up server
 var server = restify.createServer();
