@@ -1,5 +1,49 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div.row
+    div.large-12.columns
+        h2 Green Hornet Mockup
+        p This is version 0.1.
+        hr
+
+    div.row
+        fieldset
+            legend Upload your message
+
+            div.row
+                div.large-6.columns
+                    label Subject
+                    input(type='text', placeholder='Subject')
+
+            div.row
+                div.large-12.columns
+                    label Message
+                    textarea(placeholder="Enter your message here")
+
+            div.row
+                a(href="#", class="button") Submit
+
+
+script
+      //  document.write('<script src=' +
+      //  ('__proto__' in {} ? 'vendor/zepto' : 'vendor/jquery') +
+      //  '.js><\/script>')
+          </script>
+          <script src="../public/vendor/jquery.js"></script>
+          <script>
+          var public_key = (function($) {
+              var url = 'http://127.0.0.1:3000/recipient/public_key';
+              $.ajax({
+                 type: 'GET',
+                  url: url,
+                  async: false,
+                  contentType: "application/json",
+                  dataType: 'jsonp'
+              });
+          })(jQuery);
+          console.log(public_key);
+          </script>
+
+script
+    $(document).foundation();
