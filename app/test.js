@@ -18,6 +18,13 @@ var client = restify.createJsonClient({
 	url: 'http://localhost:3000'
 });
 
+client.post("/admin/recipient", { name: "Insert Test", url: "http://localhost:3000" }, function(err, data) {
+	console.log("\n\n=== Insert Test ===");
+	// console.log(data);
+	assert.ifError(err);
+	console.log("PASSED");
+});
+
 Recipient.Model.update({ recipient_id: "test" }, {$set: { recipient_id: "test", name: "Test Recipient", url: "http://localhost:3000" }}, { upsert: true }, function(err, data) {
 	console.log(data);
 	assert.ifError(err);
