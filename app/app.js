@@ -34,8 +34,9 @@ if ('development' == app.get('env')) {
 app.get('/', routes.index);
 app.get('/users', user.list);
 
-app.post("/api/public_key", public_key.post);
-//app.get("/api/recipient/public_key", recipient.public_key);
+app.get("/api/recipient/public_key", recipient.public_key);
+
+//app.post("/api/public_key", public_key.post);
 
 // Messaging Routes
 app.post("/api/message", message.post);
